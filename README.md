@@ -43,6 +43,7 @@
 ```
 
 <p>Avoid using the Panic() and Fatal() variations outside of main() function — it’s good practice to return errors instead, and only panic or exit directly from main().</p>
+
 ### Dependency Injection
 <p>For applications where all your handlers are in the same package, a neat way to inject dependencies is to put them into a custom application struct, and then define your handler functions as methods against application.</p>
 
