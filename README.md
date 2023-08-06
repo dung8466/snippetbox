@@ -134,7 +134,7 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 }
 ```
 
-<p>Returns a pointer to a templateData with struct initialized with the current year, flash message using [session manager](#session-manager), a boolean value indicating whether the user is [authenticated](#authentication) and a [CSRF token](#tls-certificate)</p>
+<p>Returns a pointer to a templateData with struct initialized with the current year, flash message using [session manager](#session-manager), a boolean value indicating whether the user is <del> [authenticated](#authentication) </del> and a <del> [CSRF token](#tls-certificate) </del></p>
 
 ```go
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
@@ -184,7 +184,7 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 }
 ```
 
-<p>Calls r.ParseForm() on the current [request](#request-context), Calls app.formDecoder.Decode() to unpack the HTML form data to a target destination, Checks for a form.InvalidDecoderError error and triggers a panic if we ever see it.</p>
+<p>Calls r.ParseForm() on the current <del> [request](#request-context) </del>, Calls app.formDecoder.Decode() to unpack the HTML form data to a target destination, Checks for a form.InvalidDecoderError error and triggers a panic if we ever see it.</p>
 
 ```go
 func (app *application) isAuthenticated(r *http.Request) bool {
@@ -257,7 +257,7 @@ type SnippetModel struct {
 }
 ```
 
-<p>SnippetModelInterface is use latter in [testing](#testing)</p>
+<p>SnippetModelInterface is use latter in <del> [testing](#testing) </del></p>
 <p>To use this model in handlers we need to establish a new SnippetModel struct in main() then inject it as a dependency via the application struct like below</p>
 
 ```go
@@ -288,8 +288,8 @@ type UserModel struct {
 }
 ```
 
-<p>UserModelInterface is use latter in [testing](#testing).</p>
-<p>User Model is use for [authentication](#authentication) purpose.</p>
+<p>UserModelInterface is use latter in <del> [testing](#testing) </del>.</p>
+<p>User Model is use for <del> [authentication](#authentication) </del> purpose.</p>
 
 ##### Model Methods
 
@@ -463,7 +463,7 @@ func (m *UserModel) Authenticate(email, password string) (int, error) {
 }
 ```
 
-<p>This is part of [authentication](#authentication).</p>
+<p>This is part of <del> [authentication](#authentication) </del>.</p>
 <p>Quick summary: first we retrieve the id and hashed password associated with the given email, scan databse with given email then check whether the hashed password and plain-text password provided match, if they don't, we return the ErrInvalidCredentials error.</p>
 
 ```go
