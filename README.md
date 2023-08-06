@@ -1,23 +1,22 @@
 # Snippetbox
- A follow along project in the ["Let's go"](https://lets-go.alexedwards.net/) book by Alex Edwards
+ A follow along project in the [Let's go](https://lets-go.alexedwards.net/) book by Alex Edwards
 
 ## Content
-<ul>
-    <li>[Project Structure](#project-structure)</li>
-    <li>[Logging](#logging)</li>
-    <li>[Dependency Injection](#dependency-injection)</li>
-    <li>[Errors Handling](#errors-handling)</li>
-    <li>[Database](#database)</li>
-    <li>[Middleware](#middleware)</li>
-    <li>[Routing](#routing)</li>
-    <li>[Process Forms](#process-forms)</li>
-    <li>[Session Manager](#session-manager)</li>
-    <li>[TLS certificate](#tls-certificate)</li>
-    <li>[Authentication](#authentication)</li>
-    <li>[Request Context](#request-context)</li>
-    <li>[File embedding and generics](#file-embedding-and-generics)</li>
-    <li>[Testing](#testing)</li>
-</ul>
+* [Project Structure](#project-structure)
+* [Logging](#logging)
+* [Dependency Injection](#dependency-injection)
+* [Errors Handling](#errors-handling)
+* [Database](#database)
+* [Middleware](#middleware)
+* [Routing](#routing)
+* [Process Forms](#process-forms)
+* [Session Manager](#session-manager)
+* [TLS certificate](#tls-certificate)
+* [Authentication](#authentication)
+* [Request Context](#request-context)
+* [File embedding and generics](#file-embedding-and-generics)
+* [Testing](#testing)
+
 
 ### Project Structure
 ### Logging
