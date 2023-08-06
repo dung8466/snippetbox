@@ -134,7 +134,11 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 }
 ```
 
-<p>Returns a pointer to a templateData with struct initialized with the current year, flash message using [session manager](#session-manager), a boolean value indicating whether the user is <del> [authenticated](#authentication) </del> and a <del> [CSRF token](#tls-certificate) </del></p>
+<p>
+
+Returns a pointer to a templateData with struct initialized with the current year, flash message using [session manager](#session-manager), a boolean value indicating whether the user is [authenticated](#authentication) and a [CSRF token](#tls-certificate)
+
+</p>
 
 ```go
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
@@ -184,7 +188,11 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 }
 ```
 
-<p>Calls r.ParseForm() on the current <del> [request](#request-context) </del>, Calls app.formDecoder.Decode() to unpack the HTML form data to a target destination, Checks for a form.InvalidDecoderError error and triggers a panic if we ever see it.</p>
+<p>
+	
+Calls r.ParseForm() on the current [request](#request-context), Calls app.formDecoder.Decode() to unpack the HTML form data to a target destination, Checks for a form.InvalidDecoderError error and triggers a panic if we ever see it.
+
+</p>
 
 ```go
 func (app *application) isAuthenticated(r *http.Request) bool {
@@ -257,7 +265,11 @@ type SnippetModel struct {
 }
 ```
 
-<p>SnippetModelInterface is use latter in <del> [testing](#testing) </del></p>
+<p>
+	
+SnippetModelInterface is use latter in [testing](#testing) 
+
+</p>
 <p>To use this model in handlers we need to establish a new SnippetModel struct in main() then inject it as a dependency via the application struct like below</p>
 
 ```go
@@ -288,8 +300,16 @@ type UserModel struct {
 }
 ```
 
-<p>UserModelInterface is use latter in <del> [testing](#testing) </del>.</p>
-<p>User Model is use for <del> [authentication](#authentication) </del> purpose.</p>
+<p>
+	
+UserModelInterface is use latter in [testing](#testing).
+
+</p>
+<p>
+	
+User Model is use for [authentication](#authentication) purpose.
+
+</p>
 
 ##### Model Methods
 
@@ -463,7 +483,11 @@ func (m *UserModel) Authenticate(email, password string) (int, error) {
 }
 ```
 
-<p>This is part of <del> [authentication](#authentication) </del>.</p>
+<p>
+	
+This is part of [authentication](#authentication).
+
+</p>
 <p>Quick summary: first we retrieve the id and hashed password associated with the given email, scan databse with given email then check whether the hashed password and plain-text password provided match, if they don't, we return the ErrInvalidCredentials error.</p>
 
 ```go
@@ -551,10 +575,14 @@ next.ServeHTTP(w, r)
 #### Positioning the middleware
 
 <p>If you position your middleware before the servemux in the chain then it will act on every request that your application receives.</p>
-  myMiddleware → servemux → application handler
+
+	myMiddleware → servemux → application handler
+
 <p>A good example of where this would be useful is middleware to log requests — as that’s typically something you would want to do for all requests.</p>
 <p>If you position the middleware after the servemux in the chain — by wrapping a specific application handler. This would cause your middleware to only be executed for a specific route.</p>
-  servemux → myMiddleware → application handler
+
+  	servemux → myMiddleware → application handler
+   
 <p>An example of this would be something like authorization middleware, which you may only want to run on specific routes.</p>
 
 #### Set up middleware
@@ -579,7 +607,8 @@ next.ServeHTTP(w, r)
 
 <p>Because we want this middleware to act on every request that is received, we’ll need the secureHeaders middleware function to wrap our servemux so our routes should return secureHeaders(mux)</p>
 <p>Flow of control</p>
-  secureHeaders → servemux → application handler → servemux → secureHeaders
+  
+  	secureHeaders → servemux → application handler → servemux → secureHeaders
 
 ##### Request logging
 
@@ -595,7 +624,9 @@ func (app *application) logRequest(next http.Handler) http.Handler {
 
 <p>We’re implementing the middleware as a method on application</p>
 <p>Flow of control</p>
-  logRequest ↔ secureHeaders ↔ servemux ↔ application handler
+  
+  	logRequest ↔ secureHeaders ↔ servemux ↔ application handler
+   
 <p>Our routes should return app.logRequest(secureHeaders(mux))</p>
 
 ##### Panic recovery
@@ -648,9 +679,13 @@ w.Write([]byte("OK"))
 
 <p>Using the justinas/alice package makes it easy to create composable, reusable, middleware chains </p>
 <p>It allows to rewrite a handler chain like this:</p>
-  return myMiddleware1(myMiddleware2(myMiddleware3(myHandler)))
+  
+  	return myMiddleware1(myMiddleware2(myMiddleware3(myHandler)))
+
 <p>to this:</p>
-  return alice.New(myMiddleware1, myMiddleware2, myMiddleware3).Then(myHandler)
+
+  	return alice.New(myMiddleware1, myMiddleware2, myMiddleware3).Then(myHandler)
+
 <p>But the real power lies in the fact that you can use it to create middleware chains that can be assigned to variables, appended to, and reused. For example:</p>
 
 ```go
