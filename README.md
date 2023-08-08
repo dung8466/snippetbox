@@ -706,6 +706,117 @@ return standard.Then(mux)
 
 
 ### Routing
+
+| Method | Pattern           | Handler           | Action                                         |
+| ------ | ----------------- | ----------------- | ---------------------------------------------- |
+| Get    | /                 | home              | Display the home page                          |
+| Get    | /snippet/view/:id | snippetView       | Display a specific snippet                     |
+| Get    | /snippet/create   | snippetCreate     | Display a HTML form for creating a new snippet |
+| Post   | /snippet/create   | snippetCreatePost | Create a new snippet                           |
+| Get    | /static/*filepath | http.FileServer   | Serve a specific static file                   |
+
+<p>Go’s servemux doesn’t support method based routing or clean URLs with variables in them. Use a third-party package to help with
+routing: httprouter, chi or gorilla/mux.</p>
+<p>Basic of httprouter:</p>
+
+```go
+router := httprouter.New()
+router.HandlerFunc(http.MethodGet, "/snippet/view/:id", app.snippetView)
+```
+<p>But before routing, we should check if router is present</p>
+
+```go
+// Create a handler function which wraps our notFound() helper
+router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	app.notFound(w)
+})
+```
+<p>To Serve a specific static file:</p>
+
+```go
+fileServer := http.FileServer(http.FS(ui.Files))
+router.Handler(http.MethodGet, "/static/*filepath", fileServer)
+```
+
+<p>We can also create a pattern just to check if router is up:</p>
+
+```go
+router.HandlerFunc(http.MethodGet, "/ping", ping)
+```
+
+<p>
+
+For the [sessions](#section) and [authentication](#authentication) to work, we also need to wrap our application routes with the middleware provided by the SessionManager.LoadAndSave() method and protected middleware chain — consisting of the dynamic middleware chain plus requireAuthentication() middleware.
+
+</p>
+
+```go
+// sessions
+dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
+
+router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
+router.Handler(http.MethodGet, "/snippet/view/:id", dynamic.ThenFunc(app.snippetView))
+router.Handler(http.MethodGet, "/user/signup", dynamic.ThenFunc(app.userSignup))
+router.Handler(http.MethodPost, "/user/signup", dynamic.ThenFunc(app.userSignupPost))
+router.Handler(http.MethodGet, "/user/login", dynamic.ThenFunc(app.userLogin))
+router.Handler(http.MethodPost, "/user/login", dynamic.ThenFunc(app.userLoginPost))
+```
+
+```go
+// authenticaion
+protected := dynamic.Append(app.requireAuthentication)
+
+router.Handler(http.MethodGet, "/snippet/create", protected.ThenFunc(app.snippetCreate))
+router.Handler(http.MethodPost, "/snippet/create", protected.ThenFunc(app.snippetCreatePost))
+router.Handler(http.MethodPost, "/user/logout", protected.ThenFunc(app.userLogoutPost))
+```
+
+<p>
+
+If a user is unauthenticated, we will redirected to /user/login instead using requireAuthentication handler in [middleware](#middleware)
+
+</p>
+
+```go
+func (app *application) requireAuthentication(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !app.isAuthenticated(r) {
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+			return
+		}
+
+		w.Header().Add("Cache-Control", "no-store")
+
+		next.ServeHTTP(w, r)
+	})
+}
+```
+
+<p>
+
+In the line
+
+   	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
+we also pass in noSurf - this is to protect our application from cross-site request forgery (CSRF) attacks.
+We using  justinas/nosurf package which uses the double-submit cookie pattern to prevent CSRF attacks.
+</p>
+
+```go
+// in middleware
+// uses a customized CSRF cookie with the Secure, Path and HttpOnly attributes set.
+func noSurf(next http.Handler) http.Handler {
+	csrfHandler := nosurf.New(next)
+	csrfHandler.SetBaseCookie(http.Cookie{
+		HttpOnly: true,
+		Path:     "/",
+		Secure:   true,
+	})
+
+	return csrfHandler
+}
+```
+
+
 ### Process Forms
 ### Session Manager
 ### TLS certificate
